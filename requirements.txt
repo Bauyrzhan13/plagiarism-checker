@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+openai
+python-dotenv
+
+python3 -m venv venv
+
+#запуск
+source venv/bin/activate
+export $(cat .env | xargs)     
+uvicorn main:app --reload

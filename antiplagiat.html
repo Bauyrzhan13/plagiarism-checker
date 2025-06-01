@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Проверка текста на плагиат</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  /* Общие отступы и выравнивание */
+section {
+  padding: 60px 20px;
+  margin: 40px auto;
+  max-width: 1000px;
+}
+
+section h2 {
+  font-size: 2em;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #333;
+}
+
+/* Отзывы */
+.testimonials {
+  background-color: #f6f9fc;
+  border-radius: 10px;
+}
+
+.testimonial-item {
+  background: white;
+  padding: 20px;
+  margin: 15px auto;
+  border-left: 4px solid #4caf50;
+  border-radius: 6px;
+  max-width: 700px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.testimonial-item p {
+  font-style: italic;
+  color: #444;
+}
+
+.testimonial-item span {
+  display: block;
+  margin-top: 10px;
+  color: #777;
+  font-weight: bold;
+}
+
+/* Будущие возможности */
+.pricing {
+  background: #ffffff;
+  text-align: center;
+}
+
+.pricing ul {
+  list-style: none;
+  padding: 0;
+  font-size: 1.1em;
+}
+
+.pricing li {
+  background: #f1f1f1;
+  margin: 10px auto;
+  max-width: 600px;
+  padding: 12px 20px;
+  border-radius: 8px;
+}
+
+/* Сравнение */
+.compare table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.compare th, .compare td {
+  padding: 12px 15px;
+  border: 1px solid #eaeaea;
+  text-align: center;
+}
+
+.compare th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.compare td {
+  font-size: 1em;
+}
+
+/* Контакты */
+.contact {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.contact form {
+  max-width: 600px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact input,
+.contact textarea {
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1em;
+  width: 100%;
+}
+
+.contact button {
+  padding: 12px;
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.contact button:hover {
+  background-color: #43a047;
+}
+
+/* О проекте */
+.about-us {
+  background: #ffffff;
+  text-align: center;
+}
+
+.about-us p {
+  max-width: 800px;
+  margin: auto;
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: #444;
+}
+
+  #result {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    font-family: "Courier New", monospace;
+    line-height: 1.5;
+    margin-top: 20px;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  @media (max-width: 768px) {
+  #result div {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+/* #plagiarismChart{
+  width: 200px !important;
+  height: 200px !important;
+} */
+</style>
+
+</head>
+<body>
+    <img class="logo" src="logo.png"  alt="">
+  <div class="container">
+    <h1>Проверка текста на плагиат</h1>
+    <p>Введите текст в поле ниже, чтобы проверить его уникальность. Наша система сравнит ваш текст с базой данных и покажет результат в процентах.</p>
+
+    <textarea id="inputText" placeholder="Введите текст для проверки..."></textarea>
+    <button id="checkButton">Проверить</button>
+    <div class="result" id="result">Результаты проверки появятся здесь.</div>
+
+    <!-- Раздел с инструкциями -->
+    <div class="info">
+      <h2>Как пользоваться системой?</h2>
+      <p>1. Вставьте ваш текст в текстовое поле выше.</p>
+      <p>2. Нажмите кнопку "Проверить".</p>
+      <p>3. Дождитесь анализа текста. Результаты отобразятся через несколько секунд.</p>
+      <p>4. Убедитесь, что ваш текст оригинален, прежде чем публиковать или сдавать работу.</p>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq">
+      <h2>Часто задаваемые вопросы (FAQ)</h2>
+      <p><strong>1. Какие языки поддерживаются?</strong> Наша система поддерживает русский, казахский и английский языки.</p>
+      <p><strong>2. Какова точность проверки?</strong> Мы используем современные алгоритмы, которые обеспечивают точность до 95%.</p>
+      <p><strong>3. Безопасны ли мои данные?</strong> Ваш текст не сохраняется и используется только для анализа.</p>
+      <p><strong>4. Можно ли проверить файл?</strong> Пока что поддерживается проверка только текста, но функция проверки файлов скоро будет добавлена.</p>
+    </div>
+
+    <!-- INFO about plagiarism -->
+    <section class="consequences-section">
+        <div class="section-title">
+          <h2>Consequences of Plagiarism</h2>
+          <p>Without any delay, let's go through all the possible affects you would have to face if you copy:</p>
+        </div>
+        <div class="content">
+          <div class="content-block">
+            <img src="academic-image.svg" alt="Academic Consequences">
+            <div class="text-block">
+              <h3>Academic</h3>
+              <p>
+                Today, copyrighted content has become a constant problem in educational institutions. Students create many assignments using a lot of research in a short period. Many schools/institutions, such as Duke University, have judicial affairs offices. They will review each case of plagiarism and fix penalties.
+              </p>
+            </div>
+          </div>
+          <div class="content-block">
+            <img src="personal-image.svg" alt="Personal Consequences">
+            <div class="text-block">
+              <h3>Personal</h3>
+              <p>
+                Most of the outcomes of <strong>plagiarism</strong> occur once the replication is caught. Institutions have noted that students who duplicate data often fail to learn research and writing skills. Once they leave the institution, all those students lose the ability to create original content because they have only cheated before.
+              </p>
+            </div>
+          </div>
+          <div class="content-block">
+            <img src="professional.svg" alt="">
+            <div class="text-block">
+              <h3>Professional</h3>
+              <p>
+                Countless journalists, academics, writers, and creators have had their reputations damaged by plagiarism accusations. Not only do plagiarists disrupt their ongoing work by getting fired or terminated. They also find it difficult to get work in the future. A particularly egregious instance of plagiarism, or worse, can destroy a person's professional image. It also forces them to change careers to avoid the stigma of plagiarism.
+              </p>
+            </div>
+          </div>
+          <div class="content-block">
+            <img src="legal.svg" alt="">
+            <div class="text-block">
+              <h3>Legal</h3>
+              <p>
+                Apart from all the professional and personal difficulties that may arise in certain cases, there are also legal consequences. Copying copyrighted material for profit may result in the plagiarist having to pay some financial losses. In some cases, copying data can subject the plagiarist to criminal prosecution. And the punishment can range from charges to imprisonment. 
+                So, before submitting any content, do a plagiarism check once to see if you have copied it or not. It can protect you from all kinds of harm. You won't have to wait long for results using a duplicate content checker. You can take advantage of this plagiarism checker free and save yourself from embarrassment.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    <!-- Languages -->
+    <div class="container">
+        <header class="header">
+          <h1>Plagiarism Checker Online for Multiple Languages</h1>
+          <p>
+            Our plagiarism checker online can detect plagiarism in multiple languages for users in other regions.
+            You are free to check plagiarism in different languages, including:
+          </p>
+        </header>
+        <div class="languages">
+          <div class="language-card">
+            <img src="english-flag.svg" alt="English">
+            <p>English - Plagiarism Checker</p>
+          </div>
+          <div class="language-card">
+            <img src="germany-flag.svg" alt="Deutsche">
+            <p>Deutsche - Plagiatsprüfung kostenlos</p>
+          </div>
+          <div class="language-card">
+            <img src="arabic-flag.svg" alt="Arabic">
+            <p>Arabic - الانتحال</p>
+          </div>
+          <div class="language-card">
+            <img src="spain-flag.svg" alt="Español">
+            <p>Español - Comprobador de plagio</p>
+          </div>
+          <div class="language-card">
+            <img src="portugal-flag.svg" alt="Português">
+            <p>Português - Detector de plagio</p>
+          </div>
+          <div class="language-card">
+            <img src="france-flag.svg" alt="Français">
+            <p>Français - Vérificateur de plagiat</p>
+          </div>
+          <div class="language-card">
+            <img src="italy-flag.svg" alt="Italiano">
+            <p>Italiano - Checker di plagio</p>
+          </div>
+          <div class="language-card">
+            <img src="philippines-flag.svg" alt="Filipino">
+            <p>Filipino - Checker Ng Plagiarism</p>
+          </div>
+          <div class="language-card">
+            <img src="indonesia-flag.svg" alt="Indonesia">
+            <p>Indonesia - Cek plagiarism</p>
+          </div>
+          <div class="language-card">
+            <img src="russia-flag.svg" alt="русский">
+            <p>русский - проверка на плагиат</p>
+          </div>
+          <div class="language-card">
+            <img src="india-flag.svg" alt="हिंदी">
+            <p>हिंदी - साहित्य चोरी चेकर</p>
+          </div>
+          <div class="language-card">
+            <img src="malaysia-flag.svg" alt="Malay">
+            <p>Malay - Pemeriksa Plagiarisme</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- WhyChoose-us -->
+      <div class="why-choose-section">
+        <div class="title-container">
+          <h2>Why Choose Our Plagiarism Checker</h2>
+          <p>
+            Our plagiarism checker provides many features. Some comparative functions that make our plagiarism detector unique from others are discussed below.
+          </p>
+        </div>
+        <div class="features">
+          <div class="feature">
+            <div class="icon" style="background-color: #FFD100;">
+              <img src="lightning-icon.svg" alt="Free Quick Search">
+            </div>
+            <h3>Free Quick Search</h3>
+            <p>
+              Our best free plagiarism checker is totally free. It doesn’t charge you anything which means you can conduct as many searches as you like. All you need to do is just copy and paste your content.
+            </p>
+          </div>
+          <div class="feature">
+            <div class="icon" style="background-color: #FFD100;">
+              <img src="search-icon.svg" alt="Deep Search">
+            </div>
+            <h3>Deep Search</h3>
+            <p>
+              This plagiarism checker software offers you a deep and thorough check. With deep search, you get extra levels of plagiarism search and additional result details.
+            </p>
+          </div>
+          <div class="feature">
+            <div class="icon" style="background-color: #FFD100;">
+              <img src="upload-icon.svg" alt="URL or File Uploading">
+            </div>
+            <h3>URL or File Uploading</h3>
+            <p>
+              If you don’t want to copy and paste your text, you can alternatively upload the page URL or file for a quick and free plagiarism check.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <section class="testimonials">
+        <h2>Отзывы пользователей</h2>
+        <div class="testimonial-item">
+          <p>«Очень удобный и быстрый сервис. Помог мне перед сдачей диплома!»</p>
+          <span>— Айгүл, студентка</span>
+        </div>
+        <div class="testimonial-item">
+          <p>«Как преподаватель, я рекомендую его своим коллегам. Удобно и бесплатно.»</p>
+          <span>— Николай, преподаватель</span>
+        </div>
+      </section>
+
+      <section class="pricing">
+        <h2>Будущие возможности</h2>
+        <ul>
+          <li>📁 Проверка документов (PDF, DOCX)</li>
+          <li>🔎 Глубокая проверка через интернет</li>
+          <li>📊 История проверок и отчёты</li>
+        </ul>
+      </section>
+
+      <section class="compare">
+        <h2>Почему мы лучше?</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Функция</th>
+              <th>PlagiarismDetector.net</th>
+              <th>Наша система</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Поддержка казахского</td><td>Нет</td><td>✅</td></tr>
+            <tr><td>Бесплатно</td><td>Ограничено</td><td>✅</td></tr>
+            <tr><td>Искусственный интеллект</td><td>Нет</td><td>✅</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="contact">
+        <h2>Остались вопросы?</h2>
+        <form>
+          <input type="text" placeholder="Ваш email" required>
+          <textarea placeholder="Ваш вопрос..." required></textarea>
+          <button type="submit">Отправить</button>
+        </form>
+      </section>
+
+      <section class="about-us">
+        <h2>О проекте</h2>
+        <p>Этот проект разработан командой студентов и преподавателей с целью обеспечить удобный и доступный инструмент для проверки уникальности текстов на казахском, русском и английском языках.</p>
+      </section>
+
+
+  </div>
+<script>
+async function checkPlagiarism(text) {
+  const response = await fetch('http://localhost:8000/check', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text })
+  });
+  return response.json();
+}
+
+document.getElementById('checkButton').addEventListener('click', async () => {
+  const inputText = document.getElementById('inputText').value.trim();
+  const resultDiv = document.getElementById('result');
+
+  if (!inputText) {
+    resultDiv.innerText = "Пожалуйста, введите текст.";
+    return;
+  }
+
+  resultDiv.innerText = "Проверка выполняется...";
+
+  try {
+    const result = await checkPlagiarism(inputText);
+    const content = result.result || result.error || "Нет ответа";
+
+    // Попытка найти процент совпадения в тексте ответа ChatGPT
+    const percentMatch = parseInt(content.match(/(\d{1,3})\s*%/)?.[1] || "0", 10);
+    const percentUnique = 100 - percentMatch;
+
+    resultDiv.innerHTML = `
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; margin-top: 20px;">
+    <canvas id="plagiarismChart" width="200px" height="200px"></canvas>
+    <div style="flex: 1; min-width: 250px;">
+      <p><strong>Совпадение:</strong> ${percentMatch}%</p>
+      <p><strong>Уникальность:</strong> ${percentUnique}%</p>
+      <p><strong>Комментарий:</strong></p>
+      <pre style="background: #f4f4f4; padding: 10px; border-radius: 6px;">${content}</pre>
+    </div>
+  </div>
+`;
+
+
+    new Chart(document.getElementById('plagiarismChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Уникальный', 'Плагиат'],
+        datasets: [{
+          data: [percentUnique, percentMatch],
+          backgroundColor: ['#4caf50', '#f44336']
+        }]
+      }
+    });
+  } catch (err) {
+    resultDiv.innerText = "Ошибка при проверке.";
+    console.error(err);
+  }
+});
+</script>
+
+
+
+</body>
+</html>
